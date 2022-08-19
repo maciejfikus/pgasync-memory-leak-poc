@@ -1,0 +1,6 @@
+{
+  "name": "memory_leak/test",
+  "require": {
+    "voryx/pgasync": "^2.0"
+  }
+}

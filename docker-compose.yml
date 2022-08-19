@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  app:
+    container_name: memory_leak_app
+    build:
+      context: .
+      network: host
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      docker: "true"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./public:/var/www/public
+      
+  db:
+    image: postgres:12
+    container_name: memory_leak_db
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: devsecret
+      POSTGRES_USER: devuser
+      POSTGRES_DB: devdb
+    ports:
+      - "54320:5432"
+      
+volumes:
+  db_data:
