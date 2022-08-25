@@ -2,27 +2,36 @@
 
 declare(strict_types=1);
 
+use PgAsync\Connection;
+use React\EventLoop\Loop;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$client = new PgAsync\Client([
-    'host' => '172.29.0.1',
-    'port' => 54320,
-    'user' => 'devuser',
+$connection = new Connection([
+    'host'     => '172.29.0.1',
+    'port'     => 54320,
+    'user'     => 'devuser',
     'password' => 'devsecret',
     'database' => 'devdb'
-]);
+], Loop::get());
 
-for($i = 1; $i <= 30000; $i++) {
-    $client->query('SELECT 1')->subscribe(
-        fn($result) => 5,
-        fn($result) => 5,
+for ($i = 1; $i <= 30000; $i++) {
+    $connection->query('SELECT 1')->subscribe(
+        fn($result) => var_dump($result),
+        fn($ex) => 5,
         fn() => 5,
     );
 }
 
-sleep(30);
+Loop::addPeriodicTimer(10, function () use ($connection) {
+    var_dump(
+        $connection->getBacklogLength(),
+        memory()
+    );
+});
 
-function memory() {
+function memory()
+{
     $memory_size = memory_get_usage();
     $memory_size_real = memory_get_usage(true);
     $memory_size_peak_real = memory_get_peak_usage(true);
@@ -43,5 +52,3 @@ function memory() {
         ) . ' ' . $memory_unit[$x],
     ];
 }
-
-var_dump(memory());

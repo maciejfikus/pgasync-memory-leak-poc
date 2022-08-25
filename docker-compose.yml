@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   app:
-    container_name: memory_leak_app
+    container_name: memory_leak_app_1
     build:
       context: .
       network: host
@@ -18,7 +18,7 @@ services:
       
   db:
     image: postgres:12
-    container_name: memory_leak_db
+    container_name: memory_leak_db_1
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
